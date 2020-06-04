@@ -50,16 +50,33 @@ app.post('/register',(req,res)=>{
     res.json(database.users);
     console.log(`Congratulations ${name} you have been added`);
 });
-/*app.get('/profile/:id',(req,res)=>{
-    const {id}=req.params;
+
+app.get('/profile/:id',(req,res)=>{
+    const id=Number(req.params.id);
+    let found=false;
     database.users.forEach(user=>{
         if(user.id===id){
-            res.json(user);
-        }else{
-            res.status(400).send(`Bad Request`);
+            found=true;
+            return res.json(`Logged In`);
         }
     });
-});*/
+    if(found===false)
+        res.status(400).json(`Bad Request`);
+})
+
+app.put('/image',(req,res)=>{
+    const id=Number(req.body.id);
+    let found=false;
+    database.users.forEach(user=>{
+        if(user.id===id){
+            found=true;
+            user.entries++;
+            return res.json(user.entries);
+        }
+    });
+    if(!found)
+        res.json(`Bad Request`);
+});
 
 const PORT=process.env.PORT || 3000;
 app.listen(PORT,()=>{ console.log(`Server started on Port:${PORT}`) });
